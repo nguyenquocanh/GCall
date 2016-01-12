@@ -1,0 +1,22 @@
+PODS:
+  - Bolts/Tasks (1.5.1)
+  - LiquidLoader (0.1.1)
+  - Parse (1.11.0):
+    - Bolts/Tasks (~> 1.5)
+  - TwilioSDK (1.2.7)
+  - ZeroPush (2.1.1)
+
+DEPENDENCIES:
+  - LiquidLoader
+  - Parse
+  - TwilioSDK (~> 1.2)
+  - ZeroPush (~> 2.1)
+
+SPEC CHECKSUMS:
+  Bolts: a12663244b1d3351c738882e71902fc74db54f64
+  LiquidLoader: cf49954a6643f610c06a7db45da2da81a68a154b
+  Parse: 886af46a0a677402f6374bb97ac212e795f70afe
+  TwilioSDK: d3982acf6880ddf3ce57c4444e021a71c5f35653
+  ZeroPush: 7ffb98c85723b4ea95d4555ebeaff5e273d831fa
+
+COCOAPODS: 0.39.0
