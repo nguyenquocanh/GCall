@@ -15,10 +15,8 @@ class PhoneViewController: UIViewController {
     
     private var phone:GCallPhone = GCallPhone()
     var showSplash: Bool = false
-    private var audioPlayer: AVAudioPlayer!
-    private var playSoundID: SystemSoundID = 0
-    private var timerPlaySound: NSTimer!
     private var indicatorWaitingCall2: IMGActivityIndicator!
+    private var appDelegate: AppDelegate!
     
     @IBOutlet weak var lblHangup: UILabel!
     @IBOutlet weak var btnHangup: UIButton!
@@ -64,14 +62,8 @@ class PhoneViewController: UIViewController {
         self.lblHangup.hidden = true
         
         self.indicatorWaitingCall2 = IMGActivityIndicator(frame: CGRectMake(0, 0, 200, 200))
-        self.indicatorWaitingCall2.center = self.viewBody.center
-        //self.indicatorWaitingCall = LiquidLoader(frame: CGRectMake(0, 0, 200, 200), effect: Effect.GrowCircle(UIColor(red: 82/255, green: 25/255, blue: 126/255, alpha: 1.0)))
-        //self.indicatorWaitingCall.center = self.viewBody.center
-        self.viewBody.addSubview(self.indicatorWaitingCall2)
-        
-        let soundFilePath = NSBundle.mainBundle().pathForResource("incoming", ofType: "wav")
-        let soundFileURL = NSURL.fileURLWithPath(soundFilePath!)
-        AudioServicesCreateSystemSoundID(soundFileURL, &self.playSoundID)
+        self.indicatorWaitingCall2.center = self.view.center
+        self.view.addSubview(self.indicatorWaitingCall2)
         
         self.phone.login()
         
@@ -91,6 +83,8 @@ class PhoneViewController: UIViewController {
             self,
             selector:Selector("connectionDidDisconnect:"),
             name:kNotifyConnectionDidDisconnect, object:nil)
+        
+        self.appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     }
 
     override func didReceiveMemoryWarning() {
@@ -130,10 +124,7 @@ class PhoneViewController: UIViewController {
         self.lblHangup.hidden = false
         self.btnLogout.hidden = true
         self.indicatorWaitingCall2.hidden = true
-        if self.timerPlaySound != nil {
-            self.timerPlaySound.invalidate()
-            self.timerPlaySound = nil
-        }
+        //self.appDelegate.stopRing()
     }
     
     func didReject() {
@@ -142,10 +133,7 @@ class PhoneViewController: UIViewController {
         self.lblHangup.hidden = true
         self.btnLogout.hidden = false
         self.indicatorWaitingCall2.hidden = false
-        if self.timerPlaySound != nil {
-            self.timerPlaySound.invalidate()
-            self.timerPlaySound = nil
-        }
+        //self.appDelegate.stopRing()
     }
     
     func didHangup() {
@@ -170,19 +158,13 @@ class PhoneViewController: UIViewController {
                 application.cancelAllLocalNotifications()
             }
             notification.alertBody = "Incoming Call"
-            //notification.soundName = UILocalNotificationDefaultSoundName
             application.presentLocalNotificationNow(notification)
-            self.timerPlaySound = NSTimer.scheduledTimerWithTimeInterval(2.0, target: self, selector: Selector("playSound"), userInfo: nil, repeats: true)
+            //self.appDelegate.startRing()
         }
         
         self.hideButton(false)
         self.btnLogout.hidden = true
         self.indicatorWaitingCall2.hidden = true
-    }
-    
-    func playSound() {
-        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
-        AudioServicesPlaySystemSound(self.playSoundID)
     }
     
     func pendingIncomingConnectionDidDisconnect(notification:NSNotification) {
@@ -195,10 +177,7 @@ class PhoneViewController: UIViewController {
         self.lblHangup.hidden = true
         self.btnLogout.hidden = false
         self.indicatorWaitingCall2.hidden = false
-        if self.timerPlaySound != nil {
-            self.timerPlaySound.invalidate()
-            self.timerPlaySound = nil
-        }
+        //self.appDelegate.stopRing()
     }
     
     func connectionDidDisconnect(notification:NSNotification) {
@@ -207,10 +186,7 @@ class PhoneViewController: UIViewController {
         self.lblHangup.hidden = true
         self.btnLogout.hidden = false
         self.indicatorWaitingCall2.hidden = false
-        if self.timerPlaySound != nil {
-            self.timerPlaySound.invalidate()
-            self.timerPlaySound = nil
-        }
+        //self.appDelegate.stopRing()
     }
     
     func hideButton(flag: Bool) {

@@ -26,9 +26,17 @@ class LoginViewController: UIViewController {
         
         self.btnLogin.initButtonWithBackgroundColor(UIColor(red: 82/255, green: 25/255, blue: 126/255, alpha: 1.0), withTextColor: UIColor.whiteColor(), withBorderColor: nil)
         self.btnLogin.addTarget(self, action: "didLogin", forControlEvents: UIControlEvents.TouchUpInside)
+        
         self.btnSignUp.initButtonWithBackgroundColor(UIColor.whiteColor(), withTextColor: UIColor(red: 82/255, green: 25/255, blue: 126/255, alpha: 1.0), withBorderColor: UIColor(red: 82/255, green: 25/255, blue: 126/255, alpha: 1.0))
         self.btnSignUp.addTarget(self, action: "didSignUp", forControlEvents: UIControlEvents.TouchUpInside)
-                self.txtUserName.enableMaterialPlaceHolder(true)
+        self.btnSignUp.hidden = true
+        PFConfig.getConfigInBackgroundWithBlock { (config, error) -> Void in
+            if config?.objectForKey("Signup") as! Bool {
+                self.btnSignUp.hidden = false
+            }
+        }
+        
+        self.txtUserName.enableMaterialPlaceHolder(true)
         self.txtUserName.errorColor = UIColor.redColor()
         self.txtUserName.lineColor = UIColor(red: 82/255, green: 25/255, blue: 126/255, alpha: 1.0)
         self.txtUserName.tintColor = UIColor(red: 82/255, green: 25/255, blue: 126/255, alpha: 1.0)
@@ -86,7 +94,7 @@ class LoginViewController: UIViewController {
                 if user != nil {
                     print("The login success")
                     // Do stuff after successful login.
-                    let userLocal = User(username: user!.username!, email: user!.email!, phone: user?.objectForKey("phone") as! String, link: user?.objectForKey("link") as! String, sid: user?.objectForKey("sid") as! String, token: user?.objectForKey("token") as! String)
+                    let userLocal = User(username: user!.username!, email: user!.email!, phone: user?.objectForKey("phone") as! String, link: user?.objectForKey("link") as! String, sid: user?.objectForKey("sid") as! String, token: user?.objectForKey("token") as! String, avatar: user?.objectForKey("avatar") as! String)
                     Utils.saveUser(userLocal)
                     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
                     let phoneViewController = Utils.mainStoryboard.instantiateViewControllerWithIdentifier("PhoneViewController") as? PhoneViewController

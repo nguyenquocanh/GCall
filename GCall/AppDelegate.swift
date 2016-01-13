@@ -9,17 +9,25 @@
 import UIKit
 import Parse
 import PushKit
-import ZeroPush
+import AVFoundation
+import AudioToolbox
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var loginViewController: LoginViewController?
-    var phoneViewController: PhoneViewController?
+    private var loginViewController: LoginViewController?
+    private var phoneViewController: PhoneViewController?
+    private var timerPlaySound: NSTimer!
+    private var playSoundID: SystemSoundID = 0
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        
+        let soundFilePath = NSBundle.mainBundle().pathForResource("incoming", ofType: "wav")
+        let soundFileURL = NSURL.fileURLWithPath(soundFilePath!)
+        AudioServicesCreateSystemSoundID(soundFileURL, &self.playSoundID)
+
         
         //Pushwoosh
         //PushNotificationManager.pushManager().delegate = self
@@ -33,8 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Initialize Parse.
         Parse.enableLocalDatastore()
-        Parse.setApplicationId("JxmlaydBSVWjQgWTGFj6OuWTaOpR07k7O6Iwz5ws",
-            clientKey: "W73FwFrd1Sqm49JoKysuaI8viXj2GIRiP6wqoHwW")
+        Parse.setApplicationId("<App Id>", clientKey: "<Client Key>")
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
         
         UIApplication.sharedApplication().statusBarHidden = false
@@ -114,22 +121,21 @@ extension AppDelegate {
         let state = UIApplication.sharedApplication().applicationState
         return state == UIApplicationState.Active
     }
-}
-
-extension UIApplicationState {
     
-    //help to output a string instead of an enum number
-    var stringValue : String {
-        get {
-            switch(self) {
-            case .Active:
-                return "Active"
-            case .Inactive:
-                return "Inactive"
-            case .Background:
-                return "Background"
-            }
+    func startRing() {
+        self.timerPlaySound = NSTimer.scheduledTimerWithTimeInterval(2.0, target: self, selector: Selector("playSound"), userInfo: nil, repeats: true)
+    }
+    
+    func stopRing() {
+        if self.timerPlaySound != nil {
+            self.timerPlaySound.invalidate()
+            self.timerPlaySound = nil
         }
+    }
+    
+    func playSound() {
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+        AudioServicesPlaySystemSound(self.playSoundID)
     }
 }
 

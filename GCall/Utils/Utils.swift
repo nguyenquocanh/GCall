@@ -186,3 +186,19 @@ extension UIButton {
         self.addSubview(line)
     }
 }
+
+extension UIApplicationState {
+    
+    var stringValue : String {
+        get {
+            switch(self) {
+            case .Active:
+                return "Active"
+            case .Inactive:
+                return "Inactive"
+            case .Background:
+                return "Background"
+            }
+        }
+    }
+}

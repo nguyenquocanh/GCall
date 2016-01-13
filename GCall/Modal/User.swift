@@ -15,14 +15,16 @@ class User: NSObject, NSCoding {
     var link:String
     var sid:String
     var token:String
+    var avatar:String
     
-    init(username:String, email:String,phone:String,link:String,sid:String,token:String) {
+    init(username:String, email:String,phone:String,link:String,sid:String,token:String, avatar:String) {
         self.username = username
         self.email = email
         self.phone = phone
         self.link = link
         self.sid = sid
         self.token = token
+        self.avatar = avatar
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -32,6 +34,7 @@ class User: NSObject, NSCoding {
         self.link = aDecoder.decodeObjectForKey("link") as! String
         self.sid = aDecoder.decodeObjectForKey("sid") as! String
         self.token = aDecoder.decodeObjectForKey("token") as! String
+        self.avatar = aDecoder.decodeObjectForKey("avatar") as! String
     }
     
     func encodeWithCoder(aCoder: NSCoder) {
@@ -41,5 +44,6 @@ class User: NSObject, NSCoding {
         aCoder.encodeObject(self.link, forKey: "link")
         aCoder.encodeObject(self.sid, forKey: "sid")
         aCoder.encodeObject(self.token, forKey: "token")
+        aCoder.encodeObject(self.avatar, forKey: "avatar")
     }
 }

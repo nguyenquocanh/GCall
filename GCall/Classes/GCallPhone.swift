@@ -176,9 +176,11 @@ public class GCallPhone: NSObject, TCDeviceDelegate, TCConnectionDelegate {
     }
     
     func logout() {
+        self.device?.unlisten()
         self.connection = nil
         self.pendingConnection = nil
-        self.device?.disconnectAll()
+        self.device = nil
+        
     }
     
     func acceptConnection() {
